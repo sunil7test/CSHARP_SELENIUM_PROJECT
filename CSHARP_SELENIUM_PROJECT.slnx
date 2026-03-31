@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Log4NetConfig.xml" />
+  </Folder>
+  <Project Path="BUSINESS_LOGIC_LAYER/BUSINESS_LOGIC_LAYER.csproj" />
+  <Project Path="CORE_SELENIUM_UTILITY_LAYER/CORE_SELENIUM_UTILITY_LAYER.csproj" />
+  <Project Path="TEST_AUTOMATION_LAYER/TEST_AUTOMATION_LAYER.csproj" />
+</Solution>
