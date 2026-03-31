@@ -1,8 +1,9 @@
+using System.IO;
 using BUSINESS_LOGIC_LAYER.Pages;
+using BUSINESS_LOGIC_LAYER.Drivers;
 using log4net;
 using log4net.Config;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using Reqnroll;
 using Reqnroll.BoDi;
 
@@ -11,15 +12,14 @@ namespace TEST_AUTOMATION_LAYER.Hooks
     [Binding]
     public sealed class WebDriverHook
     {
-        // For additional details on Reqnroll hooks see https://go.reqnroll.net/doc-hooks
         private readonly IObjectContainer _objectContainer;
-        private IWebDriver _driver;
         private static readonly ILog log = LogManager.GetLogger(typeof(WebDriverHook));
 
         public WebDriverHook(IObjectContainer objectContainer)
         {
             _objectContainer = objectContainer;
         }
+
         [BeforeTestRun]
         public static void BeforeTestRun()
         {
@@ -27,48 +27,36 @@ namespace TEST_AUTOMATION_LAYER.Hooks
             XmlConfigurator.Configure(logRepository, new FileInfo("Log4NetConfig.xml"));
             log.Info("Automated test execution started.");
         }
+
         [AfterTestRun]
         public static void AfterTestRun()
         {
             log.Info("Automated test execution finished.");
         }
 
-            [BeforeScenario("@smoke")]
+        [BeforeScenario("@smoke")]
         public void BeforeScenarioWithTag()
         {
-            // Example of filtering hooks using tags. (in this case, this 'before scenario' hook will execute if the feature/scenario contains the tag '@tag1')
-            // See https://go.reqnroll.net/doc-hooks#tag-scoping
+            // Create/register factory (can be registered into container if you want DI)
+            var factory = new DriverFactory();
 
-            //TODO: implement logic that has to run before executing each scenario
+            // Initialize singleton once per process/test-run as needed
+            WebDriverSingleton.Instance.Initialize(factory, BrowserType.Chrome);
 
-           
-                _driver = new ChromeDriver();
-                _driver.Manage().Window.Maximize();
-                _objectContainer.RegisterInstanceAs<IWebDriver>(_driver);
-          
-
-
+            // Register the singleton's driver instance into the object container so other classes (e.g., pages) can resolve IWebDriver
+            _objectContainer.RegisterInstanceAs<IWebDriver>(WebDriverSingleton.Instance.Driver);
         }
 
-        //[BeforeScenario(Order = 1)]
-        //public void FirstBeforeScenario()
-        //{
-        //    // Example of ordering the execution of hooks
-        //    // See https://go.reqnroll.net/doc-hooks#hook-execution-order
-
-        //    //TODO: implement logic that has to run before executing each scenario
-        //}
-
         [AfterScenario]
-        public void AfterScenario(ScenarioContext scenarioContext,LoginPage loginPage)
+        public void AfterScenario(ScenarioContext scenarioContext, LoginPage loginPage)
         {
-            //TODO: implement logic that has to run after executing each scenario
             if (scenarioContext.TestError != null)
             {
-             loginPage.CaptureLoginScreenshot();               
+                try { loginPage.CaptureLoginScreenshot(); } catch { /* best effort */ }
             }
-                _objectContainer.Resolve<IWebDriver>().Quit();
-            _objectContainer.Resolve<IWebDriver>().Dispose();
+
+            // Best place to cleanup the singleton driver:
+            WebDriverSingleton.Instance.QuitAndDispose();
         }
     }
 }

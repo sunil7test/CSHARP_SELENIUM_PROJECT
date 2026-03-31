@@ -1,5 +1,6 @@
 using System;
 using BUSINESS_LOGIC_LAYER.Pages;
+using OpenQA.Selenium;
 using Reqnroll;
 
 namespace TEST_AUTOMATION_LAYER.StepDefinitions
@@ -7,16 +8,16 @@ namespace TEST_AUTOMATION_LAYER.StepDefinitions
     [Binding]
     public class LoginTestsStepDefinitions
     {
-        private readonly LoginPage _loginPage;
-       
-        public LoginTestsStepDefinitions(LoginPage loginPage)
-        {
-            _loginPage = loginPage;
-        }
+        private LoginPage _loginPage;
+        private readonly IWebDriver Driver;
+
+        public LoginTestsStepDefinitions(IWebDriver driver)=>Driver=driver;
+        
         [Given("User opens the login page at {string}")]
         public void UserOpensTheLoginPageAt(string url)
         {
             Console.WriteLine("Opening login page at: " + url);
+            _loginPage = new LoginPage(Driver);
             _loginPage.launchLoginPage(url);
         }
 
