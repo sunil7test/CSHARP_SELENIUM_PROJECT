@@ -22,11 +22,12 @@ pipeline {
         stage('Test') {
             steps {
                 // Define the category you want to run
-                    set /p testCategory = smoke 
+                 //   set /p testCategory = smoke 
                     // Define the test project path
-                    set /p testProject = CSHARP_SELENIUM_PROJECT
+                  //  set /p testProject = CSHARP_SELENIUM_PROJECT
                 echo 'Testing..'
-                bat 'dotnet test %testProject%! --filter \"TestCategory=%testCategory%!\"'
+                //bat 'dotnet test %testProject%! --filter \"TestCategory=%testCategory%!\"'
+                bat 'dotnet test --filter TestCategory=smoke'
                 echo 'Test Completed'
             }
         }
