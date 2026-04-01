@@ -21,9 +21,13 @@ pipeline {
         }
         stage('Test') {
             steps {
+                // Define the category you want to run
+                    def testCategory = "smoke" 
+                    // Define the test project path
+                    def testProject = "CSHARP_SELENIUM_PROJECT.csproj"
                 echo 'Testing..'
-                bat 'dotnet test CSHARP_SELENIUM_PROJECT.csproj'
-                echo 'Build Completed'
+                bat 'dotnet test ${testProject} --filter \"TestCategory=${testCategory}\"'
+                echo 'Test Completed'
             }
         }
         stage('Deploy') {
