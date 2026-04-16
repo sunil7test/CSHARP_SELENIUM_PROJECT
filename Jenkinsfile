@@ -27,7 +27,7 @@ pipeline {
                   //  set /p testProject = CSHARP_SELENIUM_PROJECT
                 echo 'Testing..'
                 //bat 'dotnet test %testProject%! --filter \"TestCategory=%testCategory%!\"'
-                bat 'dotnet test --filter TestCategory=smoke'
+                bat 'dotnet test --filter TestCategory=smoke --logger html'
                 echo 'Test Completed'
             }
         }
