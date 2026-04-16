@@ -27,13 +27,14 @@ pipeline {
                   //  set /p testProject = CSHARP_SELENIUM_PROJECT
                 echo 'Testing..'
                 //bat 'dotnet test %testProject%! --filter \"TestCategory=%testCategory%!\"'
-                bat 'dotnet test --filter TestCategory=smoke --logger html'
+                //bat 'dotnet test --filter TestCategory=smoke --logger html'
+                bat 'dotnet test --filter TestCategory=smoke "nunit;LogFileName=TestResult.xml"'
                 echo 'Test Completed'
             }
         }
         stage('Publish Results') {
                 steps {
-                    nunit testResultsPattern: 'TestResults/*.html'
+                    nunit testResultsPattern: 'TestResults/*.xml'
                     }
         }
         stage('Deploy') {
