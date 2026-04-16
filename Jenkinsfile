@@ -31,6 +31,11 @@ pipeline {
                 echo 'Test Completed'
             }
         }
+        stage('Publish Results') {
+                steps {
+                    nunit testResultsPattern: 'TestResult.xml'
+                    }
+        }
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
