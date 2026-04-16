@@ -33,7 +33,7 @@ pipeline {
         }
         stage('Publish Results') {
                 steps {
-                    nunit testResultsPattern: 'TestResults/*.xml'
+                    nunit testResultsPattern: 'TestResults/*.html'
                     }
         }
         stage('Deploy') {
