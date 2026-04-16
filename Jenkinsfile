@@ -34,7 +34,7 @@ pipeline {
         }
         stage('Publish Results') {
                 steps {
-                    nunit testResultsPattern: 'C:\ProgramData\Jenkins\.jenkins\workspace\CSHARP_SELENIUM_PROJECT_UI\TEST_AUTOMATION_LAYER\TestResults\TestResult.xml'
+                    nunit testResultsPattern: '**/TestResult.xml'
                     }
         }
         stage('Deploy') {
